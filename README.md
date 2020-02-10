@@ -1,2 +1,3 @@
 # bookless
-Suckless time booking service in Go
+
+Simple and suckless time booking service.
