@@ -12,7 +12,8 @@ import (
 type Customer struct {
 	gorm.Model
 
-	Name string `gorm:"not null"`
+	Key  string `gorm:"type:varchar(10);unique;not null"`
+	Name string `gorm:"unique;not null"`
 }
 
 // CreateCustomer ...

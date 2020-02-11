@@ -34,6 +34,10 @@ func NewService(d DataAccessor, api *gin.RouterGroup) Service {
 		s.NewCustomers(c)
 	})
 
+	api.POST("/customers/{key}/projects", func(c *gin.Context) {
+		s.NewCustomers(c)
+	})
+
 	return s
 }
 
