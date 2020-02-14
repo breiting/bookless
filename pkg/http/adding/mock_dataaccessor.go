@@ -6,6 +6,7 @@ package adding
 
 import (
 	context "context"
+	status "github.com/breiting/bookless/pkg/status"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 )
@@ -34,11 +35,11 @@ func (m *MockDataAccessor) EXPECT() *MockDataAccessorMockRecorder {
 }
 
 // CreateCustomer mocks base method
-func (m *MockDataAccessor) CreateCustomer(arg0 context.Context, arg1 Customer) (uint, error) {
+func (m *MockDataAccessor) CreateCustomer(arg0 context.Context, arg1 Customer) (Customer, *status.Status) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCustomer", arg0, arg1)
-	ret0, _ := ret[0].(uint)
-	ret1, _ := ret[1].(error)
+	ret0, _ := ret[0].(Customer)
+	ret1, _ := ret[1].(*status.Status)
 	return ret0, ret1
 }
 

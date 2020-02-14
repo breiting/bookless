@@ -7,9 +7,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/mock/gomock"
 )
@@ -38,6 +36,7 @@ func TestCreateCustomer(t *testing.T) {
 
 	expected := Customer{
 		Name: "Customer 1",
+		Key:  "c1",
 	}
 
 	m.EXPECT().
@@ -54,7 +53,7 @@ func TestCreateCustomer(t *testing.T) {
 	var buf bytes.Buffer
 	json.NewEncoder(&buf).Encode(p)
 
-	req, _ := http.NewRequest(http.MethodPost, "/sites", &buf)
+	req, _ := http.NewRequest(http.MethodPost, "/customers", &buf)
 	addDefaultHeaders(req)
 
 	w := httptest.NewRecorder()
@@ -74,21 +73,4 @@ func TestCreateCustomer(t *testing.T) {
 func addDefaultHeaders(req *http.Request) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
-	req.Header.Add("authorization", getToken())
-}
-
-// generate test token
-func getToken() string {
-	mySigningKey := []byte("dev01")
-	claims := auth.CustomClaims{
-		UserID: userID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Unix() + 1500,
-			Issuer:    "test",
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	ss, _ := token.SignedString(mySigningKey)
-	return "bearer " + ss
 }

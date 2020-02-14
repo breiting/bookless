@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/breiting/bookless/pkg/status"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
@@ -11,7 +12,7 @@ import (
 // DataAccessor provides an abstraction of the actual data provider. Typically
 // this is implemented by some storage.
 type DataAccessor interface {
-	CreateCustomer(ctx context.Context, c Customer) (uint, error)
+	CreateCustomer(ctx context.Context, c Customer) (Customer, *status.Status)
 }
 
 // Service interface for getting the requested data.
@@ -53,11 +54,12 @@ func (s *Service) NewCustomers(c *gin.Context) {
 		return
 	}
 
-	id, err := s.dataAccessor.CreateCustomer(context.Background(), customer)
-	if err != nil {
-		log.Error("Error during database create:", err)
-		c.AbortWithStatus(http.StatusBadRequest)
+	customer, status := s.dataAccessor.CreateCustomer(context.Background(), customer)
+
+	if status != nil {
+		status.Send(c)
 		return
 	}
-	c.JSON(http.StatusCreated, struct{ ID uint }{id})
+
+	c.JSON(http.StatusCreated, customer)
 }
